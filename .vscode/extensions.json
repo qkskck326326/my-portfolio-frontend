@@ -1,0 +1,33 @@
+{
+  "recommendations": [
+    // ESLint 오류를 실시간으로 표시
+    "dbaeumer.vscode-eslint",
+
+    // Prettier를 사용한 코드 자동 포맷팅
+    "esbenp.prettier-vscode",
+
+    // 자동 import 경로 완성
+    "steoates.autoimport",
+
+    // 경로 자동완성 (절대/상대 경로)
+    "christian-kohler.path-intellisense",
+
+    // Tailwind CSS 유틸리티 클래스 자동완성
+    "bradlc.vscode-tailwindcss",
+
+    // 주석 강조 (TODO, FIXME 등)
+    "aaron-bond.better-comments",
+
+    // TS 에러 메시지 가독성 개선
+    "yoavbls.pretty-ts-errors",
+
+    // Git 히스토리 시각화 및 blame 지원
+    "eamodio.gitlens",
+
+    // GitHub Pull Request 관리
+    "github.vscode-pull-request-github",
+
+    // GitHub Actions 설정 파일 자동완성
+    "github.vscode-github-actions"
+  ]
+}
