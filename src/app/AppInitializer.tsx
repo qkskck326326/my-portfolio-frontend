@@ -1,15 +1,19 @@
 // src/app/AppInitializer.tsx
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/features/auth/stores/authStore';
 
-const AppInitializer = () => {
+const AppInitializer = ({ children }: { children: React.ReactNode }) => {
   const checkLogin = useAuthStore((state) => state.checkLogin);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    checkLogin(); // localStorage에 토큰 있으면 isLoggedIn true로 설정
+    checkLogin();
+    setInitialized(true); // 단순화된 처리
   }, []);
 
-  return null; // 렌더링 안 함
+  if (!initialized) return null;
+
+  return <>{children}</>;
 };
 
 export default AppInitializer;
