@@ -3,7 +3,7 @@ import { apiClient } from '@/lib/apiClient';
 import type { LoginRequest } from '../types';
 
 export const loginApi = async (payload: LoginRequest): Promise<string> => {
-  const response = await apiClient.post('/api/login/email', payload, {
+  const response = await apiClient.post('/api/auth/login/email', payload, {
     withCredentials: true, // Refresh 쿠키 받기 위해 필요
   });
   return response.data.data;
@@ -14,4 +14,10 @@ export const reissueApi = async (): Promise<string> => {
     withCredentials: true, // Refresh 쿠키 받기 위해 필요
   });
   return response.data.data;
+};
+
+export const logoutApi = async (): Promise<void> => {
+  await apiClient.post('/api/auth/logout', {
+    withCredentials: true, // Refresh 쿠키 받기 위해 필요
+  });
 };
