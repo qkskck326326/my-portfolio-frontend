@@ -20,6 +20,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: () => {
     clearToken();
     set({ isLoggedIn: false });
+    alert('로그아웃 되었습니다.');
   },
 
   checkLogin: () => {
