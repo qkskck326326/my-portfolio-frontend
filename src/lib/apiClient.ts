@@ -25,18 +25,19 @@ apiClient.interceptors.request.use(config => {
 apiClient.interceptors.response.use(
   res => res,
   async error => {
-    console.error("API 요청 실패:", error);
+    console.error("API 요청 실패");
     // 실패했던 원래 요청 객체 저장
     const originalRequest = error.config;
 
     // 재발급 요청 자체에서 에러났다면 인터셉터 건너뜀
     if (originalRequest.url?.includes('/api/auth/reissue')) {
+      console.error("Access 토큰 재발급 요청에서 에러 발생");
       return Promise.reject(error);
     }
 
     // 401 에러가 발생했을때 (Access 토큰 만료 등) 재발급 시도
-    if (error.response?.status === 401) {
-      
+    if (error.response?.status === 403) {
+      console.warn("Access 토큰 만료됨, 재발급 시도");
       // Access 토큰 재발급 요청
       try {
         // 서버에서 Access 토큰 재발급 API 호출
@@ -58,7 +59,7 @@ apiClient.interceptors.response.use(
       } catch (reissueError) { // Access 토큰 재발급 실패 처리시
         // 로그아웃 처리
         useAuthStore.getState().logout(); // 로그아웃 처리 (상태 초기화 + 토큰 삭제)
-        alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+        alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
         window.location.href = '/login';
         return Promise.reject(reissueError);
       }
