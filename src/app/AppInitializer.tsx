@@ -1,6 +1,9 @@
 // src/app/AppInitializer.tsx
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/features/auth/stores/authStore';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const AppInitializer = ({ children }: { children: React.ReactNode }) => {
   const checkLogin = useAuthStore((state) => state.checkLogin);
@@ -8,12 +11,16 @@ const AppInitializer = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     checkLogin();
-    setInitialized(true); // 단순화된 처리
+    setInitialized(true); // 처리 단순화
   }, []);
 
   if (!initialized) return null;
 
-  return <>{children}</>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  );
 };
 
 export default AppInitializer;
