@@ -26,7 +26,14 @@ const Header = () => {
           포트폴리오
         </Link>
         {isLoggedIn ? (
-        <button onClick={handleLogout}>로그아웃</button>
+          <>
+            <Link to="/mypage" className="text-gray-700 hover:text-blue-500">
+              마이페이지
+            </Link>
+            <button onClick={handleLogout} className="text-gray-700 hover:text-red-500">
+              로그아웃
+            </button>
+          </>
       ) : (
         <Link to="/login" className="text-gray-700 hover:text-blue-500">
           로그인
