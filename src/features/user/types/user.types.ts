@@ -1,5 +1,5 @@
 // src/features/user/types/user.types.ts
-export interface UserProfileResponse {
+export interface UserProfile {
   nickname: string;
   userThumbnail: string;
   email: string; 
