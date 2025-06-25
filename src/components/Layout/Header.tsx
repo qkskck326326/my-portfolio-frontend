@@ -2,6 +2,8 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '@/features/auth/stores/authStore';
 import { logoutApi } from '@/features/auth/api/authApi';
+import PortfolioSearchInput from '@/features/portfolio/components/PortfolioSearchInput';
+import { searchPortfolioCards } from '@/features/portfolio/api/portfolioApi';
 
 const Header = () => {
   const { isLoggedIn, logout } = useAuthStore();
@@ -22,11 +24,12 @@ const Header = () => {
         MyPortfolio
       </Link>
       <nav className="space-x-4">
-        <Link to="/portfolio" className="text-gray-700 hover:text-blue-500">
-          포트폴리오
-        </Link>
+        <PortfolioSearchInput queryFn={searchPortfolioCards} />
         {isLoggedIn ? (
           <>
+            <Link to="/portfolio/write" className="text-gray-700 hover:text-blue-500">
+              포트폴리오 작성
+            </Link>
             <Link to="/mypage" className="text-gray-700 hover:text-blue-500">
               마이페이지
             </Link>
