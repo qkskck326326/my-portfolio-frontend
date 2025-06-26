@@ -1,5 +1,5 @@
 // src/features/portfolio/components/PortfolioSearchInput.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PortfolioSearchRequest, PortfolioCard } from '../types/portfolio.types';
 import { Page } from '@/types/common.types';
 import { usePortfolioStore } from '../store/portfolioStore';
@@ -16,6 +16,10 @@ const PortfolioSearchInput = ({ queryFn }: Props) => {
     setTags,
     setQueryFn,
     triggerSearch,
+    sortField,
+    sortDirection,
+    setSortField,
+    setSortDirection,
   } = usePortfolioStore();
 
   const [tagInput, setTagInput] = useState(tags.join(','));
@@ -31,8 +35,30 @@ const PortfolioSearchInput = ({ queryFn }: Props) => {
     triggerSearch();     // 검색 트리거
   };
 
+  useEffect(() => {
+    handleSearch();
+  }, []);
+
   return (
     <div className="flex gap-4 items-center px-4 py-2 bg-white shadow-sm">
+      <select
+        className="border rounded px-2 py-1"
+        value={sortField}
+        onChange={(e) => setSortField(e.target.value as 'createdAt' | 'likeCount')}
+      >
+        <option value="createdAt">최신순</option>
+        <option value="likeCount">좋아요순</option>
+      </select>
+
+      <select
+        className="border rounded px-2 py-1"
+        value={sortDirection}
+        onChange={(e) => setSortDirection(e.target.value as 'ASC' | 'DESC')}
+      >
+        <option value="DESC">내림차순</option>
+        <option value="ASC">오름차순</option>
+      </select>
+
       <input
         className="border rounded px-2 py-1"
         placeholder="제목 검색"

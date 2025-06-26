@@ -5,7 +5,7 @@ import { useInfinitePortfolioQuery } from '../hooks/useInfiniteSearchPortfolio';
 import PortfolioCardList from './PortfolioCardList';
 
 const PortfolioInfiniteSearchResult = () => {
-  const { keyword, tags, trigger, queryFn } = usePortfolioStore();
+  const { keyword, tags, trigger, queryFn, sortField, sortDirection } = usePortfolioStore();
   const observerRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -18,7 +18,7 @@ const PortfolioInfiniteSearchResult = () => {
     {
       queryKeyBase: 'portfolioSearch',
       queryFn: queryFn!,
-      queryParams: { keyword, tags, sort: [{ field: 'createdAt', direction: 'DESC' }] },
+      queryParams: { keyword, tags, sort: [{ field: sortField, direction: sortDirection }] },
     },
     [trigger]
   );

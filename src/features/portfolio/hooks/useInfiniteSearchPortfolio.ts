@@ -16,11 +16,19 @@ export const useInfinitePortfolioQuery = (
   deps: unknown[] = []
 ) => {
   return useInfiniteQuery<Page<PortfolioCard>, Error>({
-    queryKey: [queryKeyBase, queryFn, queryParams.keyword, queryParams.tags, queryParams.sort, ...deps],
+    queryKey: [
+    queryKeyBase,
+    queryFn,
+    queryParams.keyword,
+    (queryParams.tags ?? []).join(','),
+    JSON.stringify(queryParams.sort),
+    ...deps,
+    ],
     queryFn: ({ pageParam = 0 }) =>
       queryFn({ ...queryParams, page: pageParam as number }),
     getNextPageParam: (lastPage) =>
       lastPage.last ? undefined : lastPage.number + 1,
     initialPageParam: 0,
+    refetchOnMount: true,
   });
 };
