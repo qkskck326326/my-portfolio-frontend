@@ -22,17 +22,33 @@ const PortfolioSearchInput = ({ queryFn }: Props) => {
     setSortDirection,
   } = usePortfolioStore();
 
-  const [tagInput, setTagInput] = useState(tags.join(','));
-
-  const handleTagInputChange = (value: string) => {
-    setTagInput(value);
-    const parsed = value.split(',').map((t) => t.trim()).filter(Boolean);
-    setTags(parsed);
-  };
+  const [tagInput, setTagInput] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSearch = () => {
     setQueryFn(queryFn); // 전달받은 API 함수 설정
     triggerSearch();     // 검색 트리거
+  };
+
+  // 태그 추가 함수
+  const addTag = (raw: string) => {
+  const value = raw.trim();
+  if (!value || tags.includes(value)) return;
+
+  const updated = [...tags, value];
+  setTags(updated);
+  setTagInput('');
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter((t) => t !== tagToRemove));
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    addTag(tagInput);
+  }
   };
 
   useEffect(() => {
@@ -65,12 +81,47 @@ const PortfolioSearchInput = ({ queryFn }: Props) => {
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
       />
-      <input
-        className="border rounded px-2 py-1"
-        placeholder="태그 (쉼표)"
-        value={tagInput}
-        onChange={(e) => handleTagInputChange(e.target.value)}
-      />
+      <div className="relative w-64">
+        <input
+          className="border rounded px-2 py-1 w-full"
+          placeholder="태그 입력 후 Enter 또는 ,"
+          value={tagInput}
+          onChange={(e) => setTagInput(e.target.value)}
+          onKeyDown={handleTagKeyDown}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+        />
+
+        {/* 태그 표시 영역 */}
+        {(isFocused || tags.length > 0) && (
+          <div className="absolute left-0 top-full mt-1 w-full bg-white border rounded shadow z-10 max-h-60 overflow-y-auto">
+            {tags.length > 0 ? (
+              <div className="p-2 flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="flex items-center gap-1 px-3 py-1 bg-gray-100 rounded-full text-sm"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="hover:text-red-500 text-xs"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-400 p-2">태그를 입력해 주세요</p>
+            )}
+          </div>
+        )}
+
+
+      </div>
+
       <button onClick={handleSearch} className="px-4 py-1 bg-blue-600 text-white rounded">
         검색
       </button>
