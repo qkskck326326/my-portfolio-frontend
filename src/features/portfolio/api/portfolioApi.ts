@@ -26,7 +26,7 @@ export const fetchPortfolioDetail = async (
     portfolioId: number
 ): Promise<PortfolioDetail> => {
   const res = await apiClient.get<CommonResponse<PortfolioDetail>>(
-    `/api/portfolio/${portfolioId}`
+    `/api/portfolio/${portfolioId}/public`
   );
   return res.data.data;
 };
@@ -34,5 +34,5 @@ export const fetchPortfolioDetail = async (
 // 포트폴리오 등록 API
 export const createPortfolioApi = async (request: CreatePortfolioRequest): Promise<number> => {
   const response = await apiClient.post('/api/portfolio', request);
-  return response.data.data; // ex: { data: 1 }
+  return response.data.data.portfolioId;
 };
