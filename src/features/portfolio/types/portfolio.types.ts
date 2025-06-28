@@ -46,10 +46,18 @@ export interface PortfolioSearchRequest {
   sort?: SortRequest[];
 }
 
-// 포트폴리오 생성 요청
+// 포트폴리오 등록 요청
 export type CreatePortfolioRequest = {
   title: string;
   thumbnail?: string;
   content: string;
   tags?: string[];
 };
+
+// 포트폴리오 등록 요청 응답 DTO
+export interface PortfolioIdDto {
+  portfolioId: number;
+}
+
+// 포트폴리오 등록 요청 응답
+export type CreatePortfolioResponse = CommonResponse<PortfolioIdDto>;
