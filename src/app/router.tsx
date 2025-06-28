@@ -4,6 +4,8 @@ import HomePage from '@/pages/HomePage';
 import LoginPage from '@/pages/LoginPage';
 import ErrorPage from '@/pages/ErrorPage';
 import MyPage from '@/pages/MyPage';
+import PortfolioWritePage from '@/pages/PortfolioWritePage';
+import PortfolioDetailPage from '@/pages/PortfolioDetailPage';
 import AppLayout from '@/components/Layout/AppLayout';
 
 export const router = createBrowserRouter([
@@ -14,7 +16,9 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: 'login', element: <LoginPage /> },
-      { path: 'mypage', element: <MyPage />, }
+      { path: 'mypage', element: <MyPage />, },
+      { path: "/portfolio/write", element: <PortfolioWritePage />},
+      { path: '/portfolio/:portfolioId', element: <PortfolioDetailPage />}
     ],
   },
 ]);
