@@ -1,5 +1,5 @@
 // src/features/portfolio/components/PortfolioSearchInput.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { PortfolioSearchRequest, PortfolioCard } from '../types/portfolio.types';
 import { Page } from '@/types/common.types';
 import { usePortfolioStore } from '../store/portfolioStore';
@@ -25,10 +25,10 @@ const PortfolioSearchInput = ({ queryFn }: Props) => {
   const [tagInput, setTagInput] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
-  const handleSearch = () => {
-    setQueryFn(queryFn); // 전달받은 API 함수 설정
-    triggerSearch();     // 검색 트리거
-  };
+  const handleSearch = useCallback(() => {
+    setQueryFn(queryFn);
+    triggerSearch();
+  }, [queryFn, setQueryFn, triggerSearch]);
 
   // 태그 추가 함수
   const addTag = (raw: string) => {
@@ -53,7 +53,7 @@ const PortfolioSearchInput = ({ queryFn }: Props) => {
 
   useEffect(() => {
     handleSearch();
-  }, []);
+  }, [handleSearch, sortField, sortDirection, keyword, tags]);
 
   return (
     <div className="flex gap-4 items-center px-4 py-2 bg-white shadow-sm">
