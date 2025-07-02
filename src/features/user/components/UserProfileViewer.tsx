@@ -1,12 +1,31 @@
 // src/features/user/components/UserProfileViewer.tsx
-import { useUserProfile } from '../hooks/useUserProfile';
+import { useAuthStore } from '@/features/auth/stores/authStore';
 
 interface Props {
+  slug: string;
   onEdit: () => void;
+  data?: {
+    userThumbnail: string;
+    nickname: string;
+    slug: string;
+    birth?: string;
+    email: string;
+    github?: string;
+    introduce?: string;
+  } | null;
+  isLoading?: boolean;
+  error?: Error | null
 }
 
-const UserProfileViewer = ({ onEdit }: Props) => {
-  const { data, isLoading, error } = useUserProfile();
+const UserProfileViewer = ({ slug, onEdit, data, isLoading, error }: Props) => {
+  
+  const loginUser = useAuthStore((state) => state.user);
+
+  const isMyPage = loginUser?.slug === slug;
+  console.log("loginUser: ", loginUser);
+  console.log("페이지 유저 데이터: ", data);
+  console.log("currentUser?.slug: ", slug);
+  console.log("나의 페이지인가? ", isMyPage);
 
   if (isLoading) return <div className="text-center py-20 text-gray-500">로딩 중...</div>;
   if (error) return <div className="text-center py-20 text-red-500">에러 발생: {String(error)}</div>;
@@ -23,7 +42,6 @@ const UserProfileViewer = ({ onEdit }: Props) => {
 
   return (
     <div className="max-w-4xl mx-auto mt-16 px-6 py-12 bg-white rounded-3xl shadow-xl space-y-10">
-      <h2 className="text-4xl font-extrabold text-center text-gray-800">MyPortfolio 신분증</h2>
 
       <div className="flex flex-col md:flex-row items-start gap-10">
         <img
@@ -34,6 +52,7 @@ const UserProfileViewer = ({ onEdit }: Props) => {
         <div className="flex-1 space-y-2">
           <p className="text-3xl font-bold">{nickname}</p>
           <p className="text-sm text-gray-600">생년월일: {birth}</p>
+          <p className="text-lg font-semibold">이메일</p>
           <a href={`mailto:${email}`} className="text-sm text-indigo-600 hover:underline">{email}</a>
 
           <div>
@@ -54,11 +73,13 @@ const UserProfileViewer = ({ onEdit }: Props) => {
         <p className="text-gray-700">{introduce || '소개가 없습니다.'}</p>
       </div>
 
-      <div className="flex justify-end">
-        <button onClick={onEdit} className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
-          프로필 수정
-        </button>
-      </div>
+      {isMyPage && (
+        <div className="flex justify-end">
+          <button onClick={onEdit} className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+            프로필 수정
+          </button>
+        </div>
+      )}
     </div>
   );
 };
