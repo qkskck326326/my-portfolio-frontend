@@ -1,12 +1,17 @@
 // src/features/auth/api/authApi.ts
 import axios from 'axios';
 import { apiClient } from '@/lib/apiClient';
-import type { LoginRequest } from '../types';
+import type { LoginRequest, UserInfo } from '../types';
 
 export const loginApi = async (payload: LoginRequest): Promise<string> => {
   const response = await apiClient.post('/api/auth/login/email', payload, {
     withCredentials: true, // Refresh 쿠키 받기 위해 필요
   });
+  return response.data.data;
+};
+
+export const getMyInfoApi = async (): Promise<UserInfo> => {
+  const response = await apiClient.get('/api/users/me');
   return response.data.data;
 };
 
