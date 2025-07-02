@@ -7,6 +7,7 @@ export interface PortfolioCard {
     thumbnail: string;
     title: string;
     likeCount: number;
+    slug: string;
     createdAt: string; // ISO date string: 'yyyy-MM-dd'
     nickname: string;
     authorId: number;
