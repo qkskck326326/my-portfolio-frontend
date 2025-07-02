@@ -10,10 +10,14 @@ const AppInitializer = ({ children }: { children: React.ReactNode }) => {
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    checkLogin();
-    setInitialized(true); // 처리 단순화
-  }, []);
+    const init = async () => {
+      await checkLogin(); // 로그인 확인이 완료될 때까지 대기
+      setInitialized(true);
+    };
 
+    init();
+  }, []);
+  
   if (!initialized) return null;
 
   return (
