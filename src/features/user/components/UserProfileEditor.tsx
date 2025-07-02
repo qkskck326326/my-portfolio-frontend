@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useUserProfile } from '../hooks/useUserProfile';
 
 interface Props {
+  slug: string;
   onCancel: () => void;
   onComplete: () => void;
 }
 
-const UserProfileEditor = ({ onCancel, onComplete }: Props) => {
-  const { data, updateProfile, isUpdating } = useUserProfile();
+const UserProfileEditor = ({ slug, onCancel, onComplete }: Props) => {
+  const { data, updateProfile, isUpdating } = useUserProfile({slug});
 
   const [form, setForm] = useState({
     nickname: '',
@@ -31,10 +32,10 @@ const UserProfileEditor = ({ onCancel, onComplete }: Props) => {
 
       setForm({
         nickname,
-        userThumbnail,
-        introduce,
-        github,
-        birth,
+        userThumbnail: userThumbnail ?? '',
+        introduce: introduce ?? '',
+        github: github ?? '',
+        birth: birth ?? '',
         email,
       });
     }
