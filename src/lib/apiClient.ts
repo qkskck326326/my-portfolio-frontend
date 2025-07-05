@@ -36,7 +36,8 @@ apiClient.interceptors.response.use(
     }
 
     // 401 에러가 발생했을때 (Access 토큰 만료 등) 재발급 시도
-    if (error.response?.status === 403) {
+    if (error.response?.status === 401 || !originalRequest._retry) {
+      originalRequest._retry = true; // 재시도 플래그 설정
       console.warn("Access 토큰 만료됨, 재발급 시도");
       // Access 토큰 재발급 요청
       try {
