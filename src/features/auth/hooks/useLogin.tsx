@@ -17,17 +17,19 @@ export const useLogin = () => {
     setError(null);
     try {
       const token = await loginApi(credentials);
-     setLoginState(token); // 로그인 상태 업데이트
+      setLoginState(token); // 로그인 상태 업데이트
 
       // 로그인 성공 후 홈으로 이동
       navigate('/');
     } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
-      const message = err.response?.data?.message;
-      setError(message ?? '로그인 실패');
-    } else {
-      setError('로그인 실패');
-    }
+      if (axios.isAxiosError(err)) {
+        const message = err.response?.data?.message;
+        setError(message ?? '로그인 실패');
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('로그인 실패');
+      }
     }finally {
         setIsLoading(false);
       }
