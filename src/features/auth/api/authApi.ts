@@ -7,6 +7,11 @@ export const loginApi = async (payload: LoginRequest): Promise<string> => {
   const response = await apiClient.post('/api/auth/login/email', payload, {
     withCredentials: true, // Refresh 쿠키 받기 위해 필요
   });
+
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
+
   return response.data.data;
 };
 
