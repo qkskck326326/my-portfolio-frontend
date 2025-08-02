@@ -29,7 +29,7 @@ useEffect(() => {
           <div>
             <h3 className="font-bold text-base line-clamp-2 min-h-[3rem]">{card.title}</h3>
             by. <Link
-              to={`/${card.slug}`}
+              to={`/user/${card.slug}`}
               className="text-sm text-indigo-600 hover:underline mt-1 inline-block"
               onClick={(e) => e.stopPropagation()} // 카드 전체 클릭과 충돌 방지
             >
