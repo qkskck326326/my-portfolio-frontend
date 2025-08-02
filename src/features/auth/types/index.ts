@@ -5,6 +5,7 @@ export interface LoginRequest {
 }
 
 export interface UserInfo {
+  userThumbnail: string;
   nickname: string;
   slug: string;
 }
