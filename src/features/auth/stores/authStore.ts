@@ -6,10 +6,10 @@ import { getMyInfoApi } from '../api/authApi';
 
 interface AuthState {
   isLoggedIn: boolean;
-  user: UserInfo | null; // ← 추가
-  login: (token: string) => Promise<void>; // async로 변경
+  user: UserInfo | null;
+  login: (token: string) => Promise<void>;
   logout: () => void;
-  checkLogin: () => Promise<void>; // async로 변경
+  checkLogin: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -18,14 +18,13 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   login: async (token: string) => {
   saveAccessToken(token);
-  const user = await getMyInfoApi(); // slug, nickname 정보 가져오기
+  const user = await getMyInfoApi(); // 썸네일, slug, nickname 정보 가져오기
   set({ isLoggedIn: true, user });
   },
 
   logout: () => {
     clearToken();
     set({ isLoggedIn: false });
-    alert('로그아웃 되었습니다.');
   },
 
   checkLogin: async () => {
