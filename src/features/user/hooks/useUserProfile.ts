@@ -1,14 +1,18 @@
 // src/features/user/hooks/useUserProfile.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchUserProfile, updateUserProfile } from '../api/userApi';
+import { fetchUserProfileBySlug, updateUserProfile } from '../api/userApi';
 import { UserProfile } from '../types/user.types'
 
-export const useUserProfile = () => {
+interface Props {
+  slug: string;
+}
+
+export const useUserProfile = ({slug} : Props) => {
   const queryClient = useQueryClient();
 
   const query = useQuery<UserProfile>({
-    queryKey: ['userProfile'],
-    queryFn: fetchUserProfile,
+    queryKey: ['userProfile', slug],
+    queryFn: () => fetchUserProfileBySlug(slug),
     staleTime: 5 * 60 * 1000, // 5분 캐시
   });
 
