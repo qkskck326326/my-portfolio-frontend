@@ -22,10 +22,6 @@ const UserProfileViewer = ({ slug, onEdit, data, isLoading, error }: Props) => {
   const loginUser = useAuthStore((state) => state.user);
 
   const isMyPage = loginUser?.slug === slug;
-  console.log("loginUser: ", loginUser);
-  console.log("페이지 유저 데이터: ", data);
-  console.log("currentUser?.slug: ", slug);
-  console.log("나의 페이지인가? ", isMyPage);
 
   if (isLoading) return <div className="text-center py-20 text-gray-500">로딩 중...</div>;
   if (error) return <div className="text-center py-20 text-red-500">에러 발생: {String(error)}</div>;
