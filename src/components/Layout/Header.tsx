@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuthStore } from '@/features/auth/stores/authStore';
 import { logoutApi } from '@/features/auth/api/authApi';
 import PortfolioSearchInput from '@/features/portfolio/components/PortfolioSearchInput';
-import { searchPortfolioCards, createUserPortfolioSearchFn } from '@/features/portfolio/api/portfolioApi';
+import { searchPortfolioCards, createUserPortfolioSearchFn, searchMyLikedPortfolioCards } from '@/features/portfolio/api/portfolioApi';
 
 const Header = () => {
   const { isLoggedIn, logout, user } = useAuthStore();
@@ -14,16 +14,24 @@ const Header = () => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   // 경로 기준 분기
+  // 특정 유저의 페이지 일 경우 판별
   const isUserPage = location.pathname.startsWith('/user/');
+  // 자신의 좋아요 표시한 페이지 일 경우 판별
+  const isMyLikesPage = location.pathname === '/my/likes';
 
   let queryFn = searchPortfolioCards
 
+  // 유저 페이지인 경우 해당 유저의 포트폴리오 검색 함수로 변경
   if (isUserPage) {
     const slug = location.pathname.split('/')[2]; // /user/{slug}에서 slug 추출
     queryFn = createUserPortfolioSearchFn(slug);
   }
   console.log('queryFn:', queryFn);
-  
+
+  // 자신이 좋아요 표시한 포트폴리오 페이지인 경우
+  if (isMyLikesPage) {
+    queryFn = searchMyLikedPortfolioCards;
+  }
 
   const handleLogout = async () => {
     try {
@@ -101,6 +109,13 @@ return (
                   onClick={() => setMenuOpen(false)}
                 >
                   마이페이지
+                </Link>
+                <Link
+                  to={`my/likes`}
+                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  좋아요한 포트폴리오
                 </Link>
                 <button
                   onClick={handleLogout}
