@@ -1,5 +1,5 @@
 // src/lib/apiClient.ts
-import axios from 'axios';
+import axios, { AxiosHeaders } from 'axios';
 import { reissueApi } from '@/features/auth/api/authApi';
 import { useAuthStore } from '@/features/auth/stores/authStore';
 
@@ -13,11 +13,21 @@ export const apiClient = axios.create({
 
 // 요청 인터셉터를 사용하여 Authorization 헤더에 Access 토큰 추가
 apiClient.interceptors.request.use(config => {
+  // AxiosHeaders 인스턴스로 변환
+  const h = AxiosHeaders.from(config.headers);
+
+  // 토큰 주입
   const token = localStorage.getItem('accessToken');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (token) h.set('Authorization', `Bearer ${token}`);
+
+  // FormData면 Content-Type 제거 (브라우저가 boundary 자동 설정)
+  const isFormData = typeof FormData !== 'undefined' && config.data instanceof FormData;
+  if (isFormData) {
+    h.delete('Content-Type');
+    h.delete('content-type');
   }
-  console.log("accsessToken 추가됨", token);
+
+  config.headers = h; // ✅ AxiosHeaders로 되돌려놓기
   return config;
 });
 
@@ -36,7 +46,7 @@ apiClient.interceptors.response.use(
     }
 
     // 401 에러가 발생했을때 (Access 토큰 만료 등) 재발급 시도
-    if (error.response?.status === 401 || !originalRequest._retry) {
+    if (error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true; // 재시도 플래그 설정
       console.warn("Access 토큰 만료됨, 재발급 시도");
       // Access 토큰 재발급 요청
