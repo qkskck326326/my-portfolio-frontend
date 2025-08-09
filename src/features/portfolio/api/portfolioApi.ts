@@ -34,6 +34,7 @@ export const createUserPortfolioSearchFn = (slug: string) => {
 };
 
 // 내가 좋아요 표시한 포트폴리오 카드 목록을 검색하는 API
+// TODO:: 향후 기능체크 필요
 export const searchMyLikedPortfolioCards = async (
   request: PortfolioSearchRequest
 ): Promise<Page<PortfolioCard>> => {
@@ -45,7 +46,24 @@ export const searchMyLikedPortfolioCards = async (
     }
   );
   return res.data.data;
-};///////////////////
+};
+
+// 특정 포트폴리오에 좋아요 표시 여부 확인 API
+export const checkPortfolioLiked = async (portfolioId: number): Promise<boolean> => {
+  const res = await apiClient.get<CommonResponse<boolean>>(
+    `/api/portfolioLike/${portfolioId}`
+  );
+  console.log('좋아요 체크 확인:', res.data.data);
+  return res.data.data;
+};
+
+// 특정 포트폴리오에 좋아요 토글 API
+export const portfolioLikeToggle = async (
+  portfolioId: number
+) => {
+  const res = await apiClient.post(`/api/portfolioLike`, {portfolioId});
+  return res.data.data as { liked: boolean; likeCount: number };
+};
 
 // 포트폴리오 상세 정보를 가져오는 API
 export const fetchPortfolioDetail = async (
