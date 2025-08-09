@@ -13,7 +13,7 @@ export const apiClient = axios.create({
 
 // 요청 인터셉터를 사용하여 Authorization 헤더에 Access 토큰 추가
 apiClient.interceptors.request.use(config => {
-  // AxiosHeaders 인스턴스로 변환
+  // AxiosHeaders 객체로 변환
   const h = AxiosHeaders.from(config.headers);
 
   // 토큰 주입
@@ -27,7 +27,7 @@ apiClient.interceptors.request.use(config => {
     h.delete('content-type');
   }
 
-  config.headers = h; // ✅ AxiosHeaders로 되돌려놓기
+  config.headers = h; // AxiosHeaders로 되돌리기
   return config;
 });
 
