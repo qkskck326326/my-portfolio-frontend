@@ -6,5 +6,7 @@ export const usePortfolioDetail = (id: number) => {
   return useQuery({
     queryKey: ['portfolioDetail', id],
     queryFn: () => fetchPortfolioDetail(id),
+
+    staleTime: 0, 
   });
 };
