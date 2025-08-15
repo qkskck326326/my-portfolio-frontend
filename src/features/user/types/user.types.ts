@@ -4,7 +4,6 @@ export interface UserProfileEditRequest {
   userThumbnail: string;
   github: string;
   introduce: string;
-  birth: string; // ISO date string: 'yyyy-MM-dd'
 }
 
 export interface UserProfile {

@@ -17,7 +17,6 @@ const UserProfileEditor = ({ slug, onCancel, onComplete }: Props) => {
     userThumbnail: '',
     introduce: '',
     github: '',
-    birth: '',
     email: '',
   });
 
@@ -48,7 +47,6 @@ const UserProfileEditor = ({ slug, onCancel, onComplete }: Props) => {
         userThumbnail,
         introduce,
         github,
-        birth,
         email,
       } = data;
 
@@ -57,7 +55,6 @@ const UserProfileEditor = ({ slug, onCancel, onComplete }: Props) => {
         userThumbnail: userThumbnail ?? '',
         introduce: introduce ?? '',
         github: github ?? '',
-        birth: birth ?? '',
         email,
       });
 
@@ -145,18 +142,6 @@ const UserProfileEditor = ({ slug, onCancel, onComplete }: Props) => {
             사용 가능한 닉네임입니다
           </span>
         )}
-      </div>
-
-      {/* 생년월일 */}
-      <div className="space-y-1">
-        <label className="block text-sm font-medium text-gray-700">생년월일</label>
-        <input
-          type="date"
-          name="birth"
-          value={form.birth}
-          onChange={handleChange}
-          className="w-full text-sm border px-3 py-2 rounded"
-        />
       </div>
 
       {/* GitHub */}
