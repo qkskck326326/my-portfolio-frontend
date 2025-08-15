@@ -6,9 +6,10 @@ import { usePortfolioStore } from '../store/portfolioStore';
 
 interface Props {
   queryFn: (params: PortfolioSearchRequest) => Promise<Page<PortfolioCard>>;
+  className?: string;
 }
 
-const PortfolioSearchInput = ({ queryFn }: Props) => {
+const PortfolioSearchInput = ({ queryFn, className }: Props) => {
   const {
     keyword,
     tags,
@@ -56,7 +57,7 @@ const PortfolioSearchInput = ({ queryFn }: Props) => {
   }, [handleSearch, sortField, sortDirection, keyword, tags]);
 
   return (
-    <div className="flex gap-4 items-center px-4 py-2 bg-white shadow-sm">
+    <div className={`flex gap-4 items-center px-4 py-2 bg-white shadow-sm ${className ?? ''}`}>
       <select
         className="border rounded px-2 py-1"
         value={sortField}
