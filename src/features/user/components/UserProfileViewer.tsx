@@ -8,7 +8,6 @@ interface Props {
     userThumbnail: string;
     nickname: string;
     slug: string;
-    birth?: string;
     email: string;
     github?: string;
     introduce?: string;
@@ -30,7 +29,6 @@ const UserProfileViewer = ({ slug, onEdit, data, isLoading, error }: Props) => {
   const {
     userThumbnail,
     nickname,
-    birth,
     email,
     github,
     introduce,
@@ -47,7 +45,6 @@ const UserProfileViewer = ({ slug, onEdit, data, isLoading, error }: Props) => {
         />
         <div className="flex-1 space-y-2">
           <p className="text-3xl font-bold">{nickname}</p>
-          <p className="text-sm text-gray-600">생년월일: {birth}</p>
           <p className="text-lg font-semibold">이메일</p>
           <a href={`mailto:${email}`} className="text-sm text-indigo-600 hover:underline">{email}</a>
 
