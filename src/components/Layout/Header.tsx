@@ -6,12 +6,17 @@ import { useAuthStore } from '@/features/auth/stores/authStore';
 import { logoutApi } from '@/features/auth/api/authApi';
 import PortfolioSearchInput from '@/features/portfolio/components/PortfolioSearchInput';
 import { searchPortfolioCards, createUserPortfolioSearchFn, searchMyLikedPortfolioCards } from '@/features/portfolio/api/portfolioApi';
+import defaultProfile from '@/assets/default-profile.png';
 
 const Header = () => {
   const { isLoggedIn, logout, user } = useAuthStore();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const safeThumb =
+    user?.userThumbnail && user.userThumbnail.trim().length > 0
+      ? user.userThumbnail.trim()
+      : defaultProfile;
 
   // 경로 기준 분기
   // 특정 유저의 페이지 일 경우 판별
@@ -64,68 +69,81 @@ const Header = () => {
   }, [menuOpen]);
 
 return (
-    <header className="bg-white shadow-sm border-b px-6 py-4 space-y-4">
-      {/* 상단: 로고 + 메뉴 */}
-      <div className="flex items-center justify-between">
-        <Link to="/" className="text-2xl font-bold text-blue-600">
-          MyPortfolio
-        </Link>
-        <nav className="flex items-center gap-6 text-sm">
-          {isLoggedIn ? (
-          <div className="relative" ref={menuRef}>
-            {/* 프로필 버튼 */}
-            <button
-              onClick={() => setMenuOpen((prev) => !prev)}
-              className="flex items-center gap-2 focus:outline-none"
-            >
-              <img
-                src={user?.userThumbnail ?? '/default-profile.png'} // TODO: 기본 프로필 이미지 경로 설정
-                alt="프로필"
-                className="w-10 h-10 rounded-full border border-gray-200 object-cover"
-              />
-              <span className="text-gray-700 font-medium">{user?.nickname}</span>
-              {menuOpen ? (
-                <ChevronUp className="w-4 h-4 text-gray-500" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-gray-500" />
-              )}
-            </button>
+  <header className="bg-white shadow-sm border-b px-6 py-4">
+    {/* 좌(로고) - 우(검색+로그인/프로필). 우측 묶음은 줄바꿈 허용 */}
+    <div className="flex items-center gap-4">
+      {/* 좌: 로고 */}
+      <Link to="/" className="text-2xl font-bold text-blue-600 whitespace-nowrap shrink-0">
+        MyPortfolio
+      </Link>
 
-            {/* 드롭다운 메뉴 */}
-            {menuOpen && (
-              <div
-                className="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow-lg border z-50 transform transition-transform duration-200 origin-top-right"
-              >
-                <Link
-                  to="/portfolio/write"
-                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  포트폴리오 작성
-                </Link>
-                <Link
-                  to={`/user/${user?.slug}`}
-                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  마이페이지
-                </Link>
-                <Link
-                  to={`my/likes`}
-                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  좋아요한 포트폴리오
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-500"
-                >
-                  로그아웃
-                </button>
-              </div>
-            )}
+      {/* 스페이서: 우측으로 밀기 */}
+      <div className="flex-1" />
+
+      {/* 우: 검색 + 로그인/프로필 (겹침 방지 위해 wrap) */}
+      <div className="flex flex-wrap justify-end items-center gap-x-3 gap-y-2">
+        {/* 검색: 최소 너비 보장 + 내부 크기 유지 */}
+        <div className="shrink-0 min-w-[360px] sm:min-w-[380px] md:min-w-[480px]">
+          <div className="w-full">
+            <PortfolioSearchInput queryFn={queryFn} />
           </div>
+        </div>
+
+        {/* 로그인/프로필: 고정 크기 */}
+        <nav className="flex items-center gap-6 text-sm shrink-0">
+          {isLoggedIn ? (
+            <div className="relative" ref={menuRef}>
+              {/* 프로필 버튼 */}
+              <button
+                onClick={() => setMenuOpen(prev => !prev)}
+                className="flex items-center gap-2 focus:outline-none"
+              >
+                <img
+                  src={safeThumb}
+                  alt="프로필"
+                  className="w-10 h-10 rounded-full border border-gray-200 object-cover"
+                />
+                <span className="text-gray-700 font-medium max-w-32 truncate">{user?.nickname}</span>
+                {menuOpen ? (
+                  <ChevronUp className="w-4 h-4 text-gray-500" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                )}
+              </button>
+
+              {/* 드롭다운 */}
+              {menuOpen && (
+                <div className="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow-lg border z-50">
+                  <Link
+                    to="/portfolio/write"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    포트폴리오 작성
+                  </Link>
+                  <Link
+                    to={`/user/${user?.slug}`}
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    마이페이지
+                  </Link>
+                  <Link
+                    to="/my/likes"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    좋아요한 포트폴리오
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-500"
+                  >
+                    로그아웃
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               <Link to="/login" className="text-gray-700 hover:text-blue-500">
@@ -138,12 +156,10 @@ return (
           )}
         </nav>
       </div>
+    </div>
+  </header>
+);
 
-      <div className="w-full flex justify-end">
-        <PortfolioSearchInput queryFn={queryFn} />
-      </div>
-    </header>
-  );
 };
 
 export default Header;
