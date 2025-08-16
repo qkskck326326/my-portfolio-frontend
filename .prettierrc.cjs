@@ -1,0 +1,9 @@
+// .prettierrc.cjs
+/** Prettier 기본 설정 */
+module.exports = {
+  semi: true,
+  singleQuote: true,
+  trailingComma: 'all',
+  printWidth: 100,
+  tabWidth: 2,
+};
