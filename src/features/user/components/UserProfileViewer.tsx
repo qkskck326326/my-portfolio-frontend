@@ -48,7 +48,7 @@ const UserProfileViewer = ({ slug, onEdit, data, isLoading, error }: Props) => {
     <section className="w-full mx-auto mt-16 px-6 py-12 bg-white rounded-3xl shadow-xl space-y-10">
       <div className="flex flex-col items-start gap-8 md:flex-row">
         <img
-          src={userThumbnail || 'https://placehold.co/160x160?text=Profile'}
+          src={userThumbnail || 'https://placehold.co/160x160?text=No Profile'}
           alt={`${nickname}의 프로필 이미지`}
           className="h-40 w-40 rounded-full border-4 border-indigo-200 object-cover"
         />
