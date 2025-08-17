@@ -10,16 +10,17 @@ interface AuthState {
   login: (token: string) => Promise<void>;
   logout: () => void;
   checkLogin: () => Promise<void>;
+  setUserThumbnail: (url: string) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   isLoggedIn: false,
   user: null,
 
   login: async (token: string) => {
-  saveAccessToken(token);
-  const user = await getMyInfoApi(); // 썸네일, slug, nickname 정보 가져오기
-  set({ isLoggedIn: true, user });
+    saveAccessToken(token);
+    const user = await getMyInfoApi(); // 썸네일, slug, nickname 정보 가져오기
+    set({ isLoggedIn: true, user });
   },
 
   logout: () => {
@@ -28,19 +29,24 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   checkLogin: async () => {
-  const token = getAccessToken();
-  if (!token) {
-    set({ isLoggedIn: false, user: null });
-    return;
-  }
+    const token = getAccessToken();
+    if (!token) {
+      set({ isLoggedIn: false, user: null });
+      return;
+    }
 
-  try {
-    const user = await getMyInfoApi();
-    set({ isLoggedIn: true, user });
-  } catch {
-    clearToken();
-    set({ isLoggedIn: false, user: null });
-  }
-}
-  
+    try {
+      const user = await getMyInfoApi();
+      set({ isLoggedIn: true, user });
+    } catch {
+      clearToken();
+      set({ isLoggedIn: false, user: null });
+    }
+  },
+
+  setUserThumbnail: (url: string) => {
+    const current = get().user;
+    if (!current) return; // 비로그인 == 유저 없음 -> 무시
+    set({ user: { ...current, userThumbnail: url } as UserInfo });
+  },
 }));
