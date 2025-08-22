@@ -33,12 +33,12 @@ const PortfolioSearchInput = ({ queryFn, className }: Props) => {
 
   // 태그 추가 함수
   const addTag = (raw: string) => {
-  const value = raw.trim();
-  if (!value || tags.includes(value)) return;
+    const value = raw.trim();
+    if (!value || tags.includes(value)) return;
 
-  const updated = [...tags, value];
-  setTags(updated);
-  setTagInput('');
+    const updated = [...tags, value];
+    setTags(updated);
+    setTagInput('');
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -46,10 +46,10 @@ const PortfolioSearchInput = ({ queryFn, className }: Props) => {
   };
 
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  if (e.key === 'Enter' || e.key === ',') {
-    e.preventDefault();
-    addTag(tagInput);
-  }
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      addTag(tagInput);
+    }
   };
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const PortfolioSearchInput = ({ queryFn, className }: Props) => {
   }, [handleSearch, sortField, sortDirection, keyword, tags]);
 
   return (
-    <div className={`flex gap-4 items-center px-4 py-2 bg-white shadow-sm ${className ?? ''}`}>
+    <div className={`flex gap-4 items-center px-4 py-2 bg-white ${className ?? ''}`}>
       <select
         className="border rounded px-2 py-1"
         value={sortField}
@@ -119,8 +119,6 @@ const PortfolioSearchInput = ({ queryFn, className }: Props) => {
             )}
           </div>
         )}
-
-
       </div>
 
       <button onClick={handleSearch} className="px-4 py-1 bg-blue-600 text-white rounded">

@@ -6,7 +6,7 @@ const PortfolioCardList = ({ items }: { items: CardType[] }) => {
   if (!items.length) return <p className="text-center text-gray-500">결과가 없습니다.</p>;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(240px,1fr))] max-w-7xl mx-auto">
       {items.map((card) => (
         <PortfolioCard key={card.id} card={card} />
       ))}

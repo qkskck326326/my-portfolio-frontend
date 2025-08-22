@@ -4,8 +4,10 @@ import PortfolioInfiniteSearchResult from '@/features/portfolio/components/Portf
 
 const MyLikedPortfolioPage = () => {
   return (
-    <div className="min-h-screen flex justify-center items-start bg-white">
-      <PortfolioInfiniteSearchResult />
+    <div className="min-h-screen w-full bg-white px-4">
+      <div className="mx-auto max-w-7xl">
+        <PortfolioInfiniteSearchResult />
+      </div>
     </div>
   );
 };
