@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { PortfolioSearchRequest, PortfolioCard } from '../types/portfolio.types';
 import { Page } from '@/types/common.types';
 import { usePortfolioStore } from '../store/portfolioStore';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   queryFn: (params: PortfolioSearchRequest) => Promise<Page<PortfolioCard>>;
@@ -22,6 +23,7 @@ const PortfolioSearchInput = ({ queryFn, className }: Props) => {
     setSortField,
     setSortDirection,
   } = usePortfolioStore();
+  const navigate = useNavigate();
 
   const [tagInput, setTagInput] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -29,7 +31,8 @@ const PortfolioSearchInput = ({ queryFn, className }: Props) => {
   const handleSearch = useCallback(() => {
     setQueryFn(queryFn);
     triggerSearch();
-  }, [queryFn, setQueryFn, triggerSearch]);
+    navigate('/');
+  }, [queryFn, setQueryFn, triggerSearch, navigate]);
 
   // 태그 추가 함수
   const addTag = (raw: string) => {
@@ -54,7 +57,7 @@ const PortfolioSearchInput = ({ queryFn, className }: Props) => {
 
   useEffect(() => {
     handleSearch();
-  }, [handleSearch, sortField, sortDirection, keyword, tags]);
+  }, [handleSearch]);
 
   return (
     <div className={`flex gap-4 items-center px-4 py-2 bg-white ${className ?? ''}`}>
