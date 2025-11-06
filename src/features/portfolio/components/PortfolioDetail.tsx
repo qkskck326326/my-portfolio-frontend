@@ -7,11 +7,13 @@ import { portfolioLikeToggle, checkPortfolioLiked, deletePortfolioApi } from '..
 import { useAuthStore } from '@/features/auth/stores/authStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { usePortfolioStore } from '@/features/portfolio/store/portfolioStore';
 
 const PortfolioDetail = ({ portfolio }: { portfolio: DetailType }) => {
   const { isLoggedIn, user } = useAuthStore();
   const [likeCount, setLikeCount] = useState(portfolio.likeCount);
   const [liked, setLiked] = useState(false);
+  const { tags: selectedTags, setTags, triggerSearch } = usePortfolioStore();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -76,6 +78,14 @@ const PortfolioDetail = ({ portfolio }: { portfolio: DetailType }) => {
     }
   };
 
+  const handleTagClick = (tag: string) => {
+    const updated = selectedTags.includes(tag)
+      ? selectedTags.filter((t) => t !== tag)
+      : [...selectedTags, tag];
+    setTags(updated);
+    triggerSearch();
+  };
+
   return (
     <div className="relative space-y-6">
       {/* 🔹 우측 고정 네비게이션 바 */}
@@ -129,11 +139,26 @@ const PortfolioDetail = ({ portfolio }: { portfolio: DetailType }) => {
 
         {/* 태그 */}
         <div className="flex flex-wrap gap-2">
-          {portfolio.tags.map((tag) => (
-            <span key={tag} className="px-3 py-1 bg-gray-200 rounded-full text-sm">
-              {tag}
-            </span>
-          ))}
+          {portfolio.tags.map((tag) => {
+            const selected = selectedTags.includes(tag);
+            return (
+              <button
+                key={tag}
+                onClick={() => handleTagClick(tag)}
+                aria-pressed={selected}
+                className={[
+                  'px-3 py-1 text-sm rounded-full border transition',
+                  selected
+                    ? 'bg-indigo-600 text-white border-indigo-600'
+                    : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
+                ].join(' ')}
+                title={`#${tag}`}
+              >
+                #{tag}
+              </button>
+            );
+          })}
         </div>
 
         {/* Markdown 렌더링 */}
