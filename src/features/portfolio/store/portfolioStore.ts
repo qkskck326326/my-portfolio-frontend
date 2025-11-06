@@ -17,6 +17,7 @@ interface PortfolioSearchState {
   setSortDirection: (direction: 'ASC' | 'DESC') => void;
   triggerSearch: () => void;
   reset: () => void;
+  resetSearchState: () => void;
 }
 
 export const usePortfolioStore = create<PortfolioSearchState>((set) => ({
@@ -33,4 +34,11 @@ export const usePortfolioStore = create<PortfolioSearchState>((set) => ({
   setSortDirection: (direction) => set({ sortDirection: direction }),
   triggerSearch: () => set((state) => ({ trigger: state.trigger + 1 })),
   reset: () => set({ keyword: '', tags: [], trigger: 0, queryFn: null }),
+  resetSearchState: () =>
+    set({
+      keyword: '',
+      tags: [],
+      sortField: 'createdAt',
+      sortDirection: 'DESC',
+    }),
 }));

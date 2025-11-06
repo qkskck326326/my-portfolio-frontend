@@ -11,6 +11,7 @@ import {
   searchMyLikedPortfolioCards,
 } from '@/features/portfolio/api/portfolioApi';
 import defaultProfile from '@/assets/default-profile.png';
+import { usePortfolioStore } from '@/features/portfolio/store/portfolioStore';
 
 interface HeaderProps {
   className?: string;
@@ -25,6 +26,7 @@ const Header = ({ className }: HeaderProps) => {
     user?.userThumbnail && user.userThumbnail.trim().length > 0
       ? user.userThumbnail.trim()
       : defaultProfile;
+  const { resetSearchState } = usePortfolioStore();
 
   // 경로 기준 분기
   // 특정 유저의 페이지 일 경우 판별
@@ -81,7 +83,11 @@ const Header = ({ className }: HeaderProps) => {
       {/* 좌(로고) - 우(검색+로그인/프로필). 우측 묶음은 줄바꿈 허용 */}
       <div className="flex items-center gap-4 w-full">
         {/* 좌: 로고 */}
-        <Link to="/" className="text-2xl font-bold text-blue-600 whitespace-nowrap shrink-0">
+        <Link
+          to="/"
+          onClick={resetSearchState}
+          className="text-2xl font-bold text-blue-600 whitespace-nowrap shrink-0"
+        >
           MyPortfolio
         </Link>
 
