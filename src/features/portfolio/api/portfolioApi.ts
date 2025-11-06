@@ -1,31 +1,33 @@
 // src/features/portfolio/api/portfolioApi.ts
 import { apiClient } from '@/lib/apiClient';
-import { PortfolioCard, 
-  PortfolioSearchRequest, 
-  PortfolioDetail, 
-  PortfolioCardListResponse, 
-  CreatePortfolioRequest } from '../types/portfolio.types';
+import {
+  PortfolioCard,
+  PortfolioSearchRequest,
+  PortfolioDetail,
+  PortfolioCardListResponse,
+  CreatePortfolioRequest,
+  PortfolioUpdateRequest,
+  PortfolioDeleteRequest,
+} from '../types/portfolio.types';
 import { CommonResponse, Page } from '@/types/common.types';
 
 // 포트폴리오 카드 목록을 검색하는 API
 export const searchPortfolioCards = async (
-  request: PortfolioSearchRequest
+  request: PortfolioSearchRequest,
 ): Promise<Page<PortfolioCard>> => {
   const res = await apiClient.post<PortfolioCardListResponse>(
     `/api/portfolio/search/public`,
-    request, 
+    request,
     {
-      headers: { 'Content-Type': 'application/json' }
-    }
+      headers: { 'Content-Type': 'application/json' },
+    },
   );
   return res.data.data;
 };
 
 // 특정 유저의 포트폴리오 카드 목록을 검색하는 API 생성 함수 - slug 로 api 생성
 export const createUserPortfolioSearchFn = (slug: string) => {
-  return async (
-    request: PortfolioSearchRequest
-  ): Promise<Page<PortfolioCard>> => {
+  return async (request: PortfolioSearchRequest): Promise<Page<PortfolioCard>> => {
     const res = await apiClient.post(`/api/portfolio/search/${slug}/public`, request, {
       headers: { 'Content-Type': 'application/json' },
     });
@@ -36,41 +38,35 @@ export const createUserPortfolioSearchFn = (slug: string) => {
 // 내가 좋아요 표시한 포트폴리오 카드 목록을 검색하는 API
 // TODO:: 향후 기능체크 필요
 export const searchMyLikedPortfolioCards = async (
-  request: PortfolioSearchRequest
+  request: PortfolioSearchRequest,
 ): Promise<Page<PortfolioCard>> => {
   const res = await apiClient.post<PortfolioCardListResponse>(
     `/api/portfolio/search/my/liked`,
     request,
     {
-      headers: { 'Content-Type': 'application/json' }
-    }
+      headers: { 'Content-Type': 'application/json' },
+    },
   );
   return res.data.data;
 };
 
 // 특정 포트폴리오에 좋아요 표시 여부 확인 API
 export const checkPortfolioLiked = async (portfolioId: number): Promise<boolean> => {
-  const res = await apiClient.get<CommonResponse<boolean>>(
-    `/api/portfolioLike/${portfolioId}`
-  );
+  const res = await apiClient.get<CommonResponse<boolean>>(`/api/portfolioLike/${portfolioId}`);
   console.log('좋아요 체크 확인:', res.data.data);
   return res.data.data;
 };
 
 // 특정 포트폴리오에 좋아요 토글 API
-export const portfolioLikeToggle = async (
-  portfolioId: number
-) => {
-  const res = await apiClient.post(`/api/portfolioLike`, {portfolioId});
+export const portfolioLikeToggle = async (portfolioId: number) => {
+  const res = await apiClient.post(`/api/portfolioLike`, { portfolioId });
   return res.data.data as { liked: boolean; likeCount: number };
 };
 
 // 포트폴리오 상세 정보를 가져오는 API
-export const fetchPortfolioDetail = async (
-    portfolioId: number
-): Promise<PortfolioDetail> => {
+export const fetchPortfolioDetail = async (portfolioId: number): Promise<PortfolioDetail> => {
   const res = await apiClient.get<CommonResponse<PortfolioDetail>>(
-    `/api/portfolio/${portfolioId}/public`
+    `/api/portfolio/${portfolioId}/public`,
   );
   return res.data.data;
 };
@@ -79,4 +75,18 @@ export const fetchPortfolioDetail = async (
 export const createPortfolioApi = async (request: CreatePortfolioRequest): Promise<number> => {
   const response = await apiClient.post('/api/portfolio', request);
   return response.data.data.portfolioId;
+};
+
+// 포트폴리오 수정 API
+export const updatePortfolioApi = async (id: number, data: PortfolioUpdateRequest) => {
+  const res = await apiClient.put<CommonResponse<PortfolioDetail>>(`/api/portfolio`, data);
+  return res.data.data;
+};
+
+// 포트폴리오 삭제 API
+export const deletePortfolioApi = async (portfolioId: number) => {
+  const res = await apiClient.delete<CommonResponse<PortfolioDeleteRequest>>(
+    `/api/portfolio/${portfolioId}`,
+  );
+  return res.data.data;
 };

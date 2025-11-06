@@ -2,16 +2,20 @@
 import MarkdownViewer from '@/features/portfolio/components/MarkdownViewer';
 import { PortfolioDetail as DetailType } from '../types/portfolio.types';
 import { useCallback, useEffect, useState } from 'react';
-import { Heart, Link as LinkIcon } from 'lucide-react';
-import { portfolioLikeToggle, checkPortfolioLiked } from '../api/portfolioApi';
+import { Heart, Link as LinkIcon, Pencil, Trash2 } from 'lucide-react';
+import { portfolioLikeToggle, checkPortfolioLiked, deletePortfolioApi } from '../api/portfolioApi';
 import { useAuthStore } from '@/features/auth/stores/authStore';
 import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 const PortfolioDetail = ({ portfolio }: { portfolio: DetailType }) => {
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, user } = useAuthStore();
   const [likeCount, setLikeCount] = useState(portfolio.likeCount);
   const [liked, setLiked] = useState(false);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const isAuthor = user && user.nickname === portfolio.authorNickname;
 
   // 현재 링크 복사
   const handleCopyLink = useCallback(() => {
@@ -24,9 +28,9 @@ const PortfolioDetail = ({ portfolio }: { portfolio: DetailType }) => {
   // 좋아요 상태 확인
   useEffect(() => {
     if (!isLoggedIn) {
-        setLiked(false);
-        return;
-      }
+      setLiked(false);
+      return;
+    }
 
     checkPortfolioLiked(portfolio.id)
       .then((res) => setLiked(res))
@@ -52,6 +56,26 @@ const PortfolioDetail = ({ portfolio }: { portfolio: DetailType }) => {
     }
   }, [isLoggedIn, portfolio.id, queryClient]);
 
+  // 수정 페이지 이동
+  const handleEdit = () => {
+    navigate(`/portfolio/${portfolio.id}/edit`);
+  };
+
+  // 삭제 처리
+  const handleDelete = async () => {
+    const confirmed = window.confirm('정말 이 포트폴리오를 삭제하시겠습니까?');
+    if (!confirmed) return;
+
+    try {
+      await deletePortfolioApi(portfolio.id);
+      alert('포트폴리오가 삭제되었습니다.');
+      navigate('/');
+    } catch (err) {
+      console.error('삭제 실패:', err);
+      alert('삭제 중 문제가 발생했습니다.');
+    }
+  };
+
   return (
     <div className="relative space-y-6">
       {/* 🔹 우측 고정 네비게이션 바 */}
@@ -72,6 +96,27 @@ const PortfolioDetail = ({ portfolio }: { portfolio: DetailType }) => {
           <LinkIcon size={20} />
           <span className="text-xs mt-1">공유</span>
         </button>
+
+        {/* 수정/삭제 버튼 - 작성자만 노출 */}
+        {isAuthor && (
+          <div className="flex flex-col items-center space-y-3 mt-4">
+            <button
+              onClick={handleEdit}
+              className="flex flex-col items-center bg-blue-100 text-blue-600 shadow-md rounded-full px-4 py-3 hover:bg-blue-200 transition"
+            >
+              <Pencil size={20} />
+              <span className="text-xs mt-1">수정</span>
+            </button>
+
+            <button
+              onClick={handleDelete}
+              className="flex flex-col items-center bg-red-100 text-red-600 shadow-md rounded-full px-4 py-3 hover:bg-red-200 transition"
+            >
+              <Trash2 size={20} />
+              <span className="text-xs mt-1">삭제</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 🔹 본문 */}
