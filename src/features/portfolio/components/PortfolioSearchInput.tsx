@@ -28,11 +28,22 @@ const PortfolioSearchInput = ({ queryFn, className }: Props) => {
   const [tagInput, setTagInput] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
-  const handleSearch = useCallback(() => {
+  // 검색 함수
+  const runSearch = useCallback(() => {
     setQueryFn(queryFn);
     triggerSearch();
-    navigate('/');
-  }, [queryFn, setQueryFn, triggerSearch, navigate]);
+  }, [queryFn, setQueryFn, triggerSearch]);
+
+  // 버튼 클릭 시 - 검색 + 메인 이동
+  const handleClickSearch = () => {
+    runSearch();
+    navigate('/'); // ← 버튼 눌렀을 때에만 메인 이동
+  };
+
+  // 초기 자동 검색 (컴포넌트 마운트 시 1회, 메인 이동 없음)
+  useEffect(() => {
+    runSearch();
+  }, []);
 
   // 태그 추가 함수
   const addTag = (raw: string) => {
@@ -54,10 +65,6 @@ const PortfolioSearchInput = ({ queryFn, className }: Props) => {
       addTag(tagInput);
     }
   };
-
-  useEffect(() => {
-    handleSearch();
-  }, [handleSearch]);
 
   return (
     <div className={`flex gap-4 items-center px-4 py-2 bg-white ${className ?? ''}`}>
@@ -124,7 +131,7 @@ const PortfolioSearchInput = ({ queryFn, className }: Props) => {
         )}
       </div>
 
-      <button onClick={handleSearch} className="px-4 py-1 bg-blue-600 text-white rounded">
+      <button onClick={handleClickSearch} className="px-4 py-1 bg-blue-600 text-white rounded">
         검색
       </button>
     </div>

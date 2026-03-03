@@ -6,6 +6,7 @@ import { useUserProfile } from '../hooks/useUserProfile';
 import { usePortfolioStore } from '@/features/portfolio/store/portfolioStore';
 import PortfolioInfiniteSearchResult from '@/features/portfolio/components/PortfolioSearchResult';
 import UserTagList from '@/features/user/components/UserTagList';
+import { createUserPortfolioSearchFn } from '@/features/portfolio/api/portfolioApi';
 
 interface Props {
   slug: string;
@@ -15,11 +16,35 @@ const UserProfileContainer = ({ slug }: Props) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const { data, isLoading, error } = useUserProfile({ slug });
-  const { reset: resetPortfolioStore } = usePortfolioStore();
+  const {
+    reset: resetPortfolioStore,
+    setQueryFn,
+    triggerSearch,
+    keyword,
+    tags,
+    sortField,
+    sortDirection,
+  } = usePortfolioStore();
 
+  // ✅ 1. 슬러그 바뀔 때: 유저 전용 queryFn + 초기 검색
   useEffect(() => {
+    // 이전 검색 상태 초기화
     resetPortfolioStore();
-  }, [slug, resetPortfolioStore]);
+
+    // 이 유저(slug)의 포트폴리오만 검색하는 함수로 queryFn 세팅
+    const userQueryFn = createUserPortfolioSearchFn(slug);
+    // userQueryFn: (request: PortfolioSearchRequest) => Promise<Page<PortfolioCard>>
+    setQueryFn(userQueryFn);
+
+    // 최초 검색 1회 실행
+    triggerSearch();
+  }, [slug, resetPortfolioStore, setQueryFn, triggerSearch]);
+
+  // ✅ 2. 유저 페이지에서 검색 조건 바뀌면 자동 검색
+  useEffect(() => {
+    // queryFn은 이미 "이 유저 전용"으로 세팅돼 있다고 가정
+    triggerSearch();
+  }, [keyword, tags, sortField, sortDirection, triggerSearch]);
 
   const handleEditStart = () => setIsEditing(true);
   const handleEditDone = () => setIsEditing(false);
